@@ -1,4 +1,7 @@
-architectury { common(false); injectInjectables = false }
+architectury {
+    common("forge", "fabric")
+    injectInjectables = false
+}
 
 repositories {
     maven("https://maven.fabricmc.net")

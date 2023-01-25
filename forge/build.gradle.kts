@@ -12,17 +12,17 @@ repositories {
     maven("https://thedarkcolour.github.io/KotlinForForge/")
 }
 
-minecraft {
-    mixinConfig("IngameIME-forge.mixins.json")
+loom {
+    forge { mixinConfig("IngameIME-forge.mixins.json") }
 }
 
 dependencies {
-    forge("net.minecraftforge:forge:${rootProject.architectury.minecraft}-36.1.4")
+    forge("net.minecraftforge:forge:${rootProject.architectury.minecraft}-40.2.0")
 
     //Forge Kotlin
-    modImplementation("thedarkcolour:kotlinforforge:1.11.1")
+    implementation("thedarkcolour:kotlinforforge:3.9.1")
     //Cloth Config
-    modImplementation("me.shedaniel.cloth:cloth-config-forge:4.11.+")
+    modImplementation("me.shedaniel.cloth:cloth-config-forge:6.2.+")
 
     implementation(project(path = ":common")) { isTransitive = false }
     add("developmentForge", project(path = ":common")) { isTransitive = false }

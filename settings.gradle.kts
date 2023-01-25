@@ -11,7 +11,7 @@ pluginManagement {
 }
 
 include("common")
-include("fabric")
-//include("forge")
+//include("fabric")
+include("forge")
 
 rootProject.name = "IngameIME"

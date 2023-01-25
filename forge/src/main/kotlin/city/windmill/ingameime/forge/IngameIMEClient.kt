@@ -1,27 +1,26 @@
 package city.windmill.ingameime.forge
 
+//import net.minecraftforge.fml.client.registry.ClientRegistry
 import city.windmill.ingameime.client.ConfigHandler
 import city.windmill.ingameime.client.KeyHandler
 import city.windmill.ingameime.client.ScreenHandler
 import city.windmill.ingameime.client.gui.OverlayScreen
 import city.windmill.ingameime.client.jni.ExternalBaseIME
-import net.minecraft.Util
 import net.minecraft.client.Minecraft
-import net.minecraftforge.client.event.GuiScreenEvent
-import net.minecraftforge.fml.ExtensionPoint
-import net.minecraftforge.fml.client.registry.ClientRegistry
+import net.minecraftforge.client.ClientRegistry
+import net.minecraftforge.client.ConfigGuiHandler
+import net.minecraftforge.client.event.ScreenEvent
+import net.minecraftforge.fml.IExtensionPoint
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent
-import net.minecraftforge.fml.network.FMLNetworkConstants
+import net.minecraftforge.network.NetworkConstants
 import org.apache.logging.log4j.LogManager
 import thedarkcolour.kotlinforforge.forge.FORGE_BUS
 import thedarkcolour.kotlinforforge.forge.LOADING_CONTEXT
 import thedarkcolour.kotlinforforge.forge.MOD_BUS
 import thedarkcolour.kotlinforforge.forge.runForDist
 import java.util.function.BiFunction
-import java.util.function.BiPredicate
-import java.util.function.Supplier
 
 
 @Mod("ingameime")
@@ -32,22 +31,24 @@ object IngameIMEClient {
     init {
         //Make sure the mod being absent on the other network side does not cause the client to display the server as incompatible
         LOADING_CONTEXT.registerExtensionPoint(
-            ExtensionPoint.DISPLAYTEST
+            IExtensionPoint.DisplayTest::class.java
         ) {
-            org.apache.commons.lang3.tuple.Pair.of(
-                Supplier { FMLNetworkConstants.IGNORESERVERONLY },
-                BiPredicate { _, _ -> true })
+            IExtensionPoint.DisplayTest(
+                { NetworkConstants.IGNORESERVERONLY },
+                { _, _ -> true }
+            )
         }
         LOADING_CONTEXT.registerExtensionPoint(
-            ExtensionPoint.CONFIGGUIFACTORY
+            ConfigGuiHandler.ConfigGuiFactory::class.java
         ) {
-            BiFunction { _, parent ->
+            ConfigGuiHandler.ConfigGuiFactory(BiFunction { _, parent ->
                 return@BiFunction ConfigHandler.createConfigScreen().setParentScreen(parent).build()
-            }
+            })
         }
 
         runForDist({
-            if (Util.getPlatform() == Util.OS.WINDOWS) {
+            val platform = System.getProperty("os.name").lowercase()
+            if (platform.contains("win")) {
                 LOGGER.info("it is Windows OS! Loading mod...")
 
                 with(INGAMEIME_BUS) {
@@ -55,7 +56,7 @@ object IngameIMEClient {
                     addListener(::enqueueIMC)
                 }
             } else
-                LOGGER.warn("This mod cant work in ${Util.getPlatform()} !")
+                LOGGER.warn("This mod cant work in $platform !")
         }) { LOGGER.warn("This mod cant work in a DelicateServer!") }
     }
 
@@ -67,13 +68,14 @@ object IngameIMEClient {
     @Suppress("UNUSED_PARAMETER")
     private fun enqueueIMC(event: InterModEnqueueEvent) {
         with(FORGE_BUS) {
-            addListener<GuiScreenEvent.DrawScreenEvent.Post> {
-                OverlayScreen.render(it.matrixStack, it.mouseX, it.mouseY, it.renderPartialTicks)
+            addListener<ScreenEvent.DrawScreenEvent.Post> {
+//                OverlayScreen.render(it.matrixStack, it.mouseX, it.mouseY, it.renderPartialTicks)
+                OverlayScreen.render(it.poseStack, it.mouseX, it.mouseY, it.partialTicks)
             }
-            addListener<GuiScreenEvent.KeyboardKeyPressedEvent.Pre> {
+            addListener<ScreenEvent.KeyboardKeyPressedEvent.Pre> {
                 it.isCanceled = KeyHandler.KeyState.onKeyDown(it.keyCode, it.scanCode, it.modifiers)
             }
-            addListener<GuiScreenEvent.KeyboardKeyReleasedEvent.Pre> {
+            addListener<ScreenEvent.KeyboardKeyReleasedEvent.Pre> {
                 it.isCanceled = KeyHandler.KeyState.onKeyUp(it.keyCode, it.scanCode, it.modifiers)
             }
         }

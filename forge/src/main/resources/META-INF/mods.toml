@@ -1,5 +1,5 @@
 modLoader = "kotlinforforge"
-loaderVersion = "[1.6,1.11.0),[1.11.1,)"
+loaderVersion = "[3.9,)"
 license = "LGPL-3.0"
 [[mods]]
 modId = "ingameime"
@@ -14,20 +14,20 @@ description = '''
 Enable IME in FullScreen Minecraft
 '''
 [[dependencies.ingameime]]
-modId = "cloth-config"
+modId = "cloth_config"
 mandatory = true
-versionRange = "[4.11,)"
+versionRange = "[6.2,)"
 ordering = "AFTER"
 side = "CLIENT"
 [[dependencies.ingameime]]
 modId = "forge"
 mandatory = true
-versionRange = "[32,)"
+versionRange = "[40,)"
 ordering = "NONE"
 side = "CLIENT"
 [[dependencies.ingameime]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.16,1.17)"
+versionRange = "[1.18,1.19)"
 ordering = "NONE"
 side = "CLIENT"

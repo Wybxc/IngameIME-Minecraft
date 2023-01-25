@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.*
 
 plugins {
-    kotlin("jvm") version "1.6.+"
+    kotlin("jvm") version "1.8.0"
     id("architectury-plugin") version "+"
     id("dev.architectury.loom") version "+" apply false
     id("com.github.johnrengelman.shadow") version "+" apply false
@@ -11,7 +11,7 @@ plugins {
 }
 
 //General
-val minecraft_version = "1.19.2"
+val minecraft_version = "1.18.2"
 val mod_version = "1.6.6"
 val maven_group = "city.windmill"
 val archives_base_name = "IngameIME"
@@ -165,6 +165,7 @@ allprojects {
 
 val curse_api_key: String
     get() {
+        return ""
         with(file("./local.properties")) {
             if (exists()) {
                 val props = Properties()
