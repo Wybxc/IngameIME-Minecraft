@@ -22,6 +22,7 @@ import kotlin.io.path.reader
 object ConfigHandler {
     var disableIMEInCommandMode = false
         set(value) {
+            val initial = ChatScreen::class.java.getDeclaredField("f_95576_").apply { isAccessible = true }
             if (field != value)
                 if (value) {
                     //Disable -> Enable
@@ -29,7 +30,8 @@ object ConfigHandler {
                         iEditstateListener = IEditStateListener { state ->
                             if (state == ScreenHandler.ScreenState.EditState.EDIT_OPEN
                                 && ScreenHandler.ScreenState.currentScreen is ChatScreen
-                                && (ScreenHandler.ScreenState.currentScreen as ChatScreen).initial == "/"
+                                && initial.get(ScreenHandler.ScreenState.currentScreen as ChatScreen) as String == "/"
+//                                && (ScreenHandler.ScreenState.currentScreen as ChatScreen).initial == "/"
                             ) {
                                 //Disable IME in Command Mode
                                 IMEHandler.IMEState.onEditState(ScreenHandler.ScreenState.EditState.NULL_EDIT)
