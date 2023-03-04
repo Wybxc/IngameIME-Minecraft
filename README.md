@@ -1,6 +1,6 @@
 <center><div align="center">
 
-<img src="old/IngameIME-Icon.png"/>
+<img src="icon/400x400.png"/>
 
 # IngameIME-Forge
 
@@ -36,3 +36,4 @@ ZH-CN / [EN-US](README-EN.md)
 ### 该模组需要VCRuntime141运行，请在微软的官方网站上下载。
 
 [下载链接](https://learn.microsoft.com/zh-CN/cpp/windows/latest-supported-vc-redist)
+

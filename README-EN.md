@@ -1,6 +1,6 @@
 <center><div align="center">
 
-<img src="old/IngameIME-Icon.png"/>
+<img src="icon/400x400.png"/>
 
 # IngameIME-Forge
 
