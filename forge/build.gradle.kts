@@ -1,72 +1,113 @@
-import java.time.Instant
-import java.time.format.DateTimeFormatter
+plugins {
+    id("com.github.johnrengelman.shadow") version "7.1.2"
+}
 
 architectury {
     platformSetupLoomIde()
     forge()
 }
 
-repositories {
-    maven("https://files.minecraftforge.net/maven")
-    maven("https://maven.shedaniel.me/")
-    maven("https://thedarkcolour.github.io/KotlinForForge/")
+val modId: String = rootProject.property("archives_base_name").toString()
+loom {
+    accessWidenerPath.set(project(":common").loom.accessWidenerPath)
+
+    forge {
+        convertAccessWideners.set(true)
+        extraAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
+
+        mixinConfig("ingameime.forge.mixin.json")
+    }
+
 }
 
-loom {
-    forge { mixinConfig("IngameIME-forge.mixins.json") }
+sourceSets {
+    main {
+        resources {
+            srcDir("src/generated/resources")
+        }
+    }
+}
+
+/**
+ * @see: https://docs.gradle.org/current/userguide/migrating_from_groovy_to_kotlin_dsl.html
+ * */
+val common: Configuration by configurations.creating
+val shadowCommon: Configuration by configurations.creating // Don't use shadow from the shadow plugin because we don't want IDEA to index this.
+val developmentForge: Configuration = configurations.getByName("developmentForge")
+configurations {
+    compileClasspath.get().extendsFrom(configurations["common"])
+    runtimeClasspath.get().extendsFrom(configurations["common"])
+    developmentForge.extendsFrom(configurations["common"])
 }
 
 dependencies {
-    forge("net.minecraftforge:forge:${rootProject.architectury.minecraft}-40.2.0")
-
-    //Forge Kotlin
-    implementation("thedarkcolour:kotlinforforge:3.9.1")
-    //Cloth Config
+    forge("net.minecraftforge:forge:${rootProject.property("forge_version")}")
     modImplementation("me.shedaniel.cloth:cloth-config-forge:6.2.+")
+    common(project(":common", configuration = "namedElements")) { isTransitive = false }
+    shadowCommon(project(":common", configuration = "transformProductionForge")) { isTransitive = false }
+    implementation("thedarkcolour:kotlinforforge:${rootProject.property("kotlinforforge_version")}")
+}
 
-    implementation(project(path = ":common")) { isTransitive = false }
-    add("developmentForge", project(path = ":common")) { isTransitive = false }
-    shadowC(project(path = ":common", configuration = "transformProductionForge")) { isTransitive = false }
+repositories {
+    maven {
+        name = "Kotlin for Forge"
+        url = uri("https://thedarkcolour.github.io/KotlinForForge/")
+    }
+}
+
+val javaComponent = components.getByName<AdhocComponentWithVariants>("java")
+javaComponent.withVariantsFromConfiguration(configurations["sourcesElements"]) {
+    skip()
 }
 
 tasks {
-    withType<Jar> {
-        manifest {
-            attributes(
-                "Specification-Title" to "IngameIME",
-                "Specification-Vendor" to "Windmill_City",
-                "Specification-Version" to "1",
-                "Implementation-Title" to project.name,
-                "Implementation-Version" to "${version}",
-                "Implementation-Vendor" to "Windmill_City",
-                "Implementation-Timestamp" to DateTimeFormatter.ISO_INSTANT.format(Instant.now())
-            )
+    processResources {
+        inputs.property("version", project.version)
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
+
+
+        filesMatching("META-INF/mods.toml") {
+            expand("version" to project.version)
         }
     }
-    processResources {
-        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    shadowJar {
+        exclude("fabric.mod.json")
+        exclude("architectury.common.json")
+        configurations = listOf(project.configurations["shadowCommon"])
+        archiveClassifier.set("dev-shadow")
     }
-}
 
-val changeLog: String by rootProject
+    remapJar {
+        inputFile.set(shadowJar.flatMap { it.archiveFile })
+        dependsOn(shadowJar)
+        archiveClassifier.set("forge")
+    }
 
-curseforge {
-    apiKey = rootProject.ext["apiKey"]
-    project(closureOf<com.matthewprenger.cursegradle.CurseProject> {
-        id = "440032"
-        releaseType = "release"
-        changelog = changeLog
-        mainArtifact(tasks["remapJar"])
-        addArtifact(tasks["shadowJar"])
-        addGameVersion("Forge")
-        addGameVersion("Java 16")
-        addGameVersion("1.17")
-        relations(closureOf<com.matthewprenger.cursegradle.CurseRelation> {
-            requiredDependency("kotlin-for-forge")
-            requiredDependency("cloth-config-forge")
-        })
-    })
-    options(closureOf<com.matthewprenger.cursegradle.Options> {
-        forgeGradleIntegration = false
-    })
+    jar {
+        archiveClassifier.set("dev")
+    }
+
+    sourcesJar {
+        val commonSources = project(":common").tasks.getByName<Jar>("sourcesJar")
+        dependsOn(commonSources)
+        from(commonSources.archiveFile.map { zipTree(it) })
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    }
+
+
+
+    publishing {
+        publications {
+            create<MavenPublication>("mavenForge") {
+                artifactId = "${rootProject.property("archives_base_name")}-${project.name}"
+                from(javaComponent)
+            }
+        }
+
+        // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
+        repositories {
+            // Add repositories to publish to here.
+        }
+    }
 }

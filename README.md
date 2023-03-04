@@ -1,4 +1,4 @@
-# IngameIME-Minecraft
+# IngameIME
 
 ![Icon](https://github.com/Windmill-City/IngameIME-Minecraft/raw/master/IngameIME-Icon.png)
 

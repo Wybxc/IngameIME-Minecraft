@@ -1,179 +1,70 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import net.fabricmc.loom.api.LoomGradleExtensionAPI
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import java.util.*
 
 plugins {
-    kotlin("jvm") version "1.8.0"
-    id("architectury-plugin") version "+"
-    id("dev.architectury.loom") version "+" apply false
-    id("com.github.johnrengelman.shadow") version "+" apply false
-    id("com.matthewprenger.cursegradle") version "+" apply false
+    java
+    `kotlin-dsl`
+    id("architectury-plugin") version "3.4-SNAPSHOT"
+    id("dev.architectury.loom") version "1.0-SNAPSHOT" apply false
+    kotlin("jvm") version "1.8.0" apply false
 }
 
-//General
-val minecraft_version = "1.18.2"
-val mod_version = "1.6.6"
-val maven_group = "city.windmill"
-val archives_base_name = "IngameIME"
-
-version = mod_version
-group = maven_group
-
 architectury {
-    minecraft = minecraft_version
+    minecraft = rootProject.property("minecraft_version").toString()
 }
 
 subprojects {
-    apply(plugin = "org.jetbrains.kotlin.jvm")
     apply(plugin = "dev.architectury.loom")
-    apply(plugin = "com.github.johnrengelman.shadow")
-    apply(plugin = "com.matthewprenger.cursegradle")
 
-    val shadowC by configurations.creating
+    val loom = project.extensions.getByName<LoomGradleExtensionAPI>("loom")
 
-    version = mod_version
-    group = maven_group
-    base {
-        archivesBaseName = "$archives_base_name-$name-$minecraft_version"
-    }
-
-    repositories {
-        mavenCentral()
-    }
-
-    tasks {
-        withType(ShadowJar::class) { this.configurations = listOf(shadowC) }
-        withType<KotlinCompile> {
-            kotlinOptions.jvmTarget = "17"
-        }
-
-        withType<JavaCompile> {
-            sourceCompatibility = "17"
-            targetCompatibility = "17"
-        }
-    }
-
-    lateinit var mappingsDep: Dependency
-    extensions.configure<net.fabricmc.loom.LoomGradleExtension>("loom") {
-        mappingsDep = officialMojangMappings()
-        silentMojangMappingsLicense()
-    }
     dependencies {
-        "minecraft"("com.mojang:minecraft:${minecraft_version}")
-        "mappings"(mappingsDep)
-    }
-    class Version(version: String) : Comparable<Version> {
-        @Suppress("PropertyName")
-        val VERSION_REGEX: Regex = Regex("""(\d+)(?:.(\d+)(?:.(\d+))?)?""")
-        var major: Int = 0
-        var minor: Int = 0
-        var revision: Int = 0
-
-        init {
-            VERSION_REGEX.matchEntire(version)?.apply {
-                major = this.groupValues[1].toInt()
-                minor = this.groupValues[2].toIntOrNull() ?: 0
-                revision = this.groupValues[3].toIntOrNull() ?: 0
-            } ?: throw IllegalArgumentException("Invalid version string:$version")
-        }
-
-        override fun compareTo(other: Version): Int {
-            if (this == other) return 0
-            if (this.major > other.major) return 1
-            if (this.major == other.major) {
-                if (this.minor > other.minor) return 1
-                if (this.minor == other.minor && this.revision > other.revision) return 1
-            }
-            return -1
-        }
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (javaClass != other?.javaClass) return false
-
-            other as Version
-
-            if (major != other.major) return false
-            if (minor != other.minor) return false
-            if (revision != other.revision) return false
-
-            return true
-        }
-
-        override fun hashCode(): Int {
-            var result = major
-            result = 31 * result + minor
-            result = 31 * result + revision
-            return result
-        }
-
-        override fun toString(): String {
-            return "$major.$minor.$revision"
-        }
-    }
-
-    afterEvaluate {
-        tasks {
-            withType<com.matthewprenger.cursegradle.CurseUploadTask> {
-                onlyIf {
-                    val curseforgeFile = file("../CurseForgeLatest.json")
-                    @Suppress("UNCHECKED_CAST") val versionInfo =
-                        (groovy.json.JsonSlurper().parse(curseforgeFile) as Map<String, String>).toMutableMap()
-                    val uploadedVersion = Version(versionInfo[project.name]!!)
-                    val currentVersion = Version(project.version.toString())
-                    println("Uploaded:$uploadedVersion")
-                    println("Current:$currentVersion")
-                    return@onlyIf uploadedVersion < currentVersion
-                }
-                doLast {
-                    val curseforgeFile = file("../CurseForgeLatest.json")
-                    @Suppress("UNCHECKED_CAST") val versionInfo =
-                        (groovy.json.JsonSlurper().parse(curseforgeFile) as Map<String, String>).toMutableMap()
-                    //Uploaded, update json file
-                    versionInfo[project.name] = project.version.toString()
-                    groovy.json.JsonOutput.toJson(versionInfo).let {
-                        curseforgeFile
-                            .outputStream()
-                            .bufferedWriter().apply {
-                                write(groovy.json.JsonOutput.prettyPrint(it))
-                                flush()
-                                close()
-                            }
-                    }
-                }
-            }
-            withType(ShadowJar::class) {
-                archiveClassifier.set("shadow-dev")
-            }
-            withType(net.fabricmc.loom.task.RemapJarTask::class) {
-                onlyIf {
-                    return@onlyIf this@subprojects.name != "common"
-                }
-                val shadowTask = getByName("shadowJar") as ShadowJar
-                dependsOn(shadowTask)
-                input.set(shadowTask.archiveFile)
-                archiveAppendix.set("")
-            }
-        }
+        "minecraft"("com.mojang:minecraft:${project.property("minecraft_version")}")
+        // The following line declares the mojmap mappings, you may use other mappings as well
+        "mappings"(loom.officialMojangMappings())
+        // The following line declares the yarn mappings you may select this one as well.
+        // "mappings"("net.fabricmc:yarn:1.19.2+build.3:v2")
     }
 }
 
 allprojects {
     apply(plugin = "java")
     apply(plugin = "architectury-plugin")
-}
+    apply(plugin = "maven-publish")
+    apply(plugin = "org.jetbrains.kotlin.jvm")
 
-val curse_api_key: String
-    get() {
-        return ""
-        with(file("./local.properties")) {
-            if (exists()) {
-                val props = Properties()
-                props.load(inputStream())
-                return (props["curse_api_key"] ?: "") as String
-            }
-        }
-        return System.getenv("CURSE_API_KEY")
+    base.archivesName.set(rootProject.property("archives_base_name").toString())
+    //base.archivesBaseName = rootProject.property("archives_base_name").toString()
+    version = rootProject.property("mod_version").toString()
+    group = rootProject.property("maven_group").toString()
+
+    repositories {
+        // Add repositories to retrieve artifacts from in here.
+        // You should only use this when depending on other mods because
+        // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
+        // See https://docs.gradle.org/current/userguide/declaring_repositories.html
+        // for more information about repositories.
     }
 
-rootProject.ext["apiKey"] = curse_api_key
+    dependencies {
+        "compileClasspath"("org.jetbrains.kotlin:kotlin-gradle-plugin:${property("kotlin_version")}")
+    }
+
+    tasks.withType<JavaCompile> {
+        options.encoding = "UTF-8"
+        options.release.set(17)
+    }
+
+    java {
+        withSourcesJar()
+    }
+
+    val compileKotlin: KotlinCompile by tasks
+    compileKotlin.kotlinOptions {
+        jvmTarget = "17"
+    }
+    val compileTestKotlin: KotlinCompile by tasks
+    compileTestKotlin.kotlinOptions {
+        jvmTarget = "17"
+    }
+}

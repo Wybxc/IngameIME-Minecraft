@@ -1,17 +1,14 @@
 pluginManagement {
     repositories {
-        mavenCentral()
-        maven("https://maven.fabricmc.net")
-        maven("https://maven.architectury.dev")
-        maven("https://files.minecraftforge.net/maven") {
-            mavenContent { excludeGroupByRegex("""org\.eclipse.*""") }
-        }
+        maven { url = uri("https://maven.fabricmc.net/") }
+        maven { url = uri("https://maven.architectury.dev/") }
+        maven { url = uri("https://maven.minecraftforge.net/") }
         gradlePluginPortal()
     }
 }
 
 include("common")
-//include("fabric")
 include("forge")
 
-rootProject.name = "IngameIME"
+rootProject.name = "IngameIME-Forge"
+

@@ -1,33 +1,37 @@
-modLoader = "kotlinforforge"
-loaderVersion = "[3.9,)"
+modLoader="kotlinforforge"
+loaderVersion="[3,)"
+issueTrackerURL = ""
 license = "LGPL-3.0"
+
 [[mods]]
 modId = "ingameime"
-version = "${file.jarVersion}"
+version = "${version}"
 displayName = "IngameIME"
-# A URL to query for updates for this mod. See the JSON update specification <here>
-#updateJSONURL="http://myurl.me/" #optional
-displayURL = "https://github.com/Windmill-City/IngameIME-Minecraft"
-logoFile = "icon.png"
-authors = "Windmill_City"
+displayURL = "https://github.com/TexTrueStudio/IngameIME"
+credits = "Windmill_City"
+authors = "Wybxc, TexTrue, ThinkingStudio"
 description = '''
 Enable IME in FullScreen Minecraft
 '''
-[[dependencies.ingameime]]
-modId = "cloth_config"
-mandatory = true
-versionRange = "[6.2,)"
-ordering = "AFTER"
-side = "CLIENT"
+logoFile = "icon.png"
+
 [[dependencies.ingameime]]
 modId = "forge"
 mandatory = true
 versionRange = "[40,)"
 ordering = "NONE"
-side = "CLIENT"
+side = "BOTH"
+
 [[dependencies.ingameime]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.18,1.19)"
+versionRange = "[1.18,)"
 ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.ingameime]]
+modId = "cloth_config"
+mandatory = true
+versionRange = "[6,)"
+ordering = "AFTER"
 side = "CLIENT"
