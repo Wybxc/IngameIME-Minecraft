@@ -1,10 +1,10 @@
 <center><div align="center">
 
-<img src="icon/400x400.png"/>
+<img height="150" width="150" src="icon/400x400.png"/>
 
 # IngameIME-Forge
 
-Forge port of IngameIME 1.18+. Use input method in full screen Minecraft.
+Forge port of [IngameIME](https://github.com/Windmill-City/IngameIME-Minecraft) 1.18+. Use input method in full screen Minecraft.
 
 [ZH-CN](README.md) / EN-US
 
@@ -14,11 +14,15 @@ Forge port of IngameIME 1.18+. Use input method in full screen Minecraft.
 
 ### Window Mode
 
-![Window Mode](https://github.com/Windmill-City/IngameIME-Minecraft/raw/master/Docs/WindowInput.gif)
+<div align="center">
+<img height="250" width="450" src="old/Docs/WindowInput.gif"/>
+</div>
 
 ### Full screen Mode
 
-![Full screen Mode](https://github.com/Windmill-City/IngameIME-Minecraft/raw/master/Docs/FullScreenInput.gif)
+<div align="center">
+<img height="250" width="450" src="old/Docs/FullScreenInput.gif"/>
+</div>
 
 # Toggle Key
 
@@ -28,11 +32,12 @@ Forge port of IngameIME 1.18+. Use input method in full screen Minecraft.
 
 ## Dependencies
 
-### Forge
-
 - [Kotlin for Forge](https://www.curseforge.com/minecraft/mc-mods/kotlin-for-forge)
 - [Cloth Config API (Forge)](https://www.curseforge.com/minecraft/mc-mods/cloth-config-forge)
 
-### This Mod requires VCRuntime141 to run, download it on the official website of Microsoft
+### This Mod requires VCRuntime141 to run, download it on the official website of Microsoft [Download Link](https://learn.microsoft.com/en-US/cpp/windows/latest-supported-vc-redist)
 
-[Download Link](https://learn.microsoft.com/en-US/cpp/windows/latest-supported-vc-redist)
+# This mod code reference/use
+
+- [Windmill-City/IngameIME-Minecraft](https://github.com/Windmill-City/IngameIME-Minecraft) (Forge 1.16.5) (LGPL-2.1)
+- [Wybxc/IngameIME-Minecraft](https://github.com/Wybxc/IngameIME-Minecraft) (Forge 1.18.x) (LGPL-2.1)
