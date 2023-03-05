@@ -1,10 +1,10 @@
 <center><div align="center">
 
-<img src="icon/400x400.png"/>
+<img height="150" width="150" src="icon/400x400.png"/>
 
 # IngameIME-Forge
 
-IngameIME 1.18+ 的 Forge 移植版。在全屏的Minecraft中使用输入法。
+[IngameIME](https://github.com/Windmill-City/IngameIME-Minecraft) 1.18+ 的 Forge 移植版。在全屏的Minecraft中使用输入法。
 
 ZH-CN / [EN-US](README-EN.md)
 
@@ -14,11 +14,15 @@ ZH-CN / [EN-US](README-EN.md)
 
 ### 窗口模式
 
-![窗口模式](https://github.com/Windmill-City/IngameIME-Minecraft/raw/master/Docs/WindowInput.gif)
+<div align="center">
+<img height="250" width="450" src="old/Docs/WindowInput.gif"/>
+</div>
 
 ### 全屏模式
 
-![全屏模式](https://github.com/Windmill-City/IngameIME-Minecraft/raw/master/Docs/FullScreenInput.gif)
+<div align="center">
+<img height="250" width="450" src="old/Docs/FullScreenInput.gif"/>
+</div>
 
 # 按键切换
 
@@ -28,12 +32,11 @@ ZH-CN / [EN-US](README-EN.md)
 
 ## 依赖
 
-### Forge
-
 - [Kotlin for Forge](https://www.curseforge.com/minecraft/mc-mods/kotlin-for-forge)
 - [Cloth Config API (Forge)](https://www.curseforge.com/minecraft/mc-mods/cloth-config-forge)
 
-### 该模组需要VCRuntime141运行，请在微软的官方网站上下载。
+### 该模组需要VCRuntime141运行，请在微软的官方网站上下载  [下载链接](https://learn.microsoft.com/zh-CN/cpp/windows/latest-supported-vc-redist)
 
-[下载链接](https://learn.microsoft.com/zh-CN/cpp/windows/latest-supported-vc-redist)
-
+# 代码使用/引用
+- [Windmill-City/IngameIME-Minecraft](https://github.com/Windmill-City/IngameIME-Minecraft) (Forge 1.16.5) (LGPL-2.1)
+- [Wybxc/IngameIME-Minecraft](https://github.com/Wybxc/IngameIME-Minecraft) (Forge 1.18.x) (LGPL-2.1)
