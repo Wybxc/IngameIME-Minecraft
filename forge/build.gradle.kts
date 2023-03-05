@@ -20,14 +20,6 @@ loom {
 
 }
 
-sourceSets {
-    main {
-        resources {
-            srcDir("src/generated/resources")
-        }
-    }
-}
-
 /**
  * @see: https://docs.gradle.org/current/userguide/migrating_from_groovy_to_kotlin_dsl.html
  * */
@@ -40,19 +32,18 @@ configurations {
     developmentForge.extendsFrom(configurations["common"])
 }
 
+repositories {
+    maven {
+        url = uri("https://thedarkcolour.github.io/KotlinForForge/")
+    }
+}
+
 dependencies {
     forge("net.minecraftforge:forge:${rootProject.property("forge_version")}")
     modImplementation("me.shedaniel.cloth:cloth-config-forge:6.2.+")
+    implementation("thedarkcolour:kotlinforforge:${rootProject.property("kotlinforforge_version")}")
     common(project(":common", configuration = "namedElements")) { isTransitive = false }
     shadowCommon(project(":common", configuration = "transformProductionForge")) { isTransitive = false }
-    implementation("thedarkcolour:kotlinforforge:${rootProject.property("kotlinforforge_version")}")
-}
-
-repositories {
-    maven {
-        name = "Kotlin for Forge"
-        url = uri("https://thedarkcolour.github.io/KotlinForForge/")
-    }
 }
 
 val javaComponent = components.getByName<AdhocComponentWithVariants>("java")
@@ -81,7 +72,7 @@ tasks {
     remapJar {
         inputFile.set(shadowJar.flatMap { it.archiveFile })
         dependsOn(shadowJar)
-        archiveClassifier.set("forge")
+        //archiveClassifier.set("forge")
     }
 
     jar {
