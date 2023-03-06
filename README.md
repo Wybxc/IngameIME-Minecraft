@@ -15,13 +15,13 @@ ZH-CN / [EN-US](README-EN.md)
 ### 窗口模式
 
 <div align="center">
-<img height="250" width="450" src="old/Docs/WindowInput.gif"/>
+<img height="250" width="450" src="old/docs/WindowInput.gif"/>
 </div>
 
 ### 全屏模式
 
 <div align="center">
-<img height="250" width="450" src="old/Docs/FullScreenInput.gif"/>
+<img height="250" width="450" src="old/docs/FullScreenInput.gif"/>
 </div>
 
 # 按键切换

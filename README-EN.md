@@ -15,13 +15,13 @@ Forge port of [IngameIME](https://github.com/Windmill-City/IngameIME-Minecraft) 
 ### Window Mode
 
 <div align="center">
-<img height="250" width="450" src="old/Docs/WindowInput.gif"/>
+<img height="250" width="450" src="old/docs/WindowInput.gif"/>
 </div>
 
 ### Full screen Mode
 
 <div align="center">
-<img height="250" width="450" src="old/Docs/FullScreenInput.gif"/>
+<img height="250" width="450" src="old/docs/FullScreenInput.gif"/>
 </div>
 
 # Toggle Key
