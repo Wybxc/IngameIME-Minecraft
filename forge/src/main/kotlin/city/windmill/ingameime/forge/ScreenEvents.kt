@@ -6,8 +6,6 @@ import net.minecraftforge.api.distmarker.OnlyIn
 import net.minecraftforge.eventbus.api.Event
 import net.minecraftforge.fml.event.IModBusEvent
 
-//import net.minecraftforge.fml.event.lifecycle.IModBusEvent
-
 @OnlyIn(Dist.CLIENT)
 class ScreenEvents {
     abstract class ModEvent : Event(), IModBusEvent

@@ -1,6 +1,5 @@
 package city.windmill.ingameime.forge
 
-//import net.minecraftforge.fml.client.registry.ClientRegistry
 import city.windmill.ingameime.client.ConfigHandler
 import city.windmill.ingameime.client.KeyHandler
 import city.windmill.ingameime.client.ScreenHandler
