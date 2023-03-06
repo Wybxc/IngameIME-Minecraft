@@ -30,7 +30,7 @@ allprojects {
     apply(plugin = "maven-publish")
     apply(plugin = "org.jetbrains.kotlin.jvm")
 
-    base.archivesName.set(rootProject.property("archives_base_name").toString() + rootProject.property("minecraft_version").toString())
+    base.archivesName.set(rootProject.property("archives_base_name").toString())
     //base.archivesBaseName = rootProject.property("archives_base_name").toString()
     version = rootProject.property("mod_version").toString()
     group = rootProject.property("maven_group").toString()
