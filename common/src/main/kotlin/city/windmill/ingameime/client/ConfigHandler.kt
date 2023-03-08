@@ -11,7 +11,7 @@ import me.shedaniel.clothconfig2.api.ConfigBuilder
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.components.EditBox
 import net.minecraft.client.gui.screens.ChatScreen
-import net.minecraft.network.chat.TranslatableComponent
+import net.minecraft.network.chat.Component
 import org.apache.logging.log4j.LogManager
 import java.nio.file.Paths
 import java.nio.file.StandardOpenOption
@@ -131,41 +131,41 @@ object ConfigHandler {
 
     fun createConfigScreen(): ConfigBuilder {
         return ConfigBuilder.create()
-            .setTitle(TranslatableComponent("config.title"))
+            .setTitle(Component.translatable("config.title"))
             .setSavingRunnable { saveConfig() }.apply {
-                getOrCreateCategory(TranslatableComponent("config.category.chat")).apply {
+                getOrCreateCategory(Component.translatable("config.category.chat")).apply {
                     addEntry(
                         entryBuilder()
                             .startBooleanToggle(
-                                TranslatableComponent("desc.disableIMEInCommandMode"),
+                                Component.translatable("desc.disableIMEInCommandMode"),
                                 disableIMEInCommandMode
                             )
                             .setDefaultValue(true)
-                            .setTooltip(TranslatableComponent("tooltip.disableIMEInCommandMode"))
+                            .setTooltip(Component.translatable("tooltip.disableIMEInCommandMode"))
                             .setSaveConsumer { result -> disableIMEInCommandMode = result }
                             .build()
                     )
                     addEntry(
                         entryBuilder()
                             .startBooleanToggle(
-                                TranslatableComponent("desc.autoReplaceSlashChar"),
+                                Component.translatable("desc.autoReplaceSlashChar"),
                                 autoReplaceSlashChar
                             )
                             .setDefaultValue(true)
-                            .setTooltip(TranslatableComponent("tooltip.autoReplaceSlashChar"))
+                            .setTooltip(Component.translatable("tooltip.autoReplaceSlashChar"))
                             .setSaveConsumer { result -> autoReplaceSlashChar = result }
                             .build()
                     )
                     addEntry(
                         entryBuilder().startStrList(
-                            TranslatableComponent("desc.slashChars"),
+                            Component.translatable("desc.slashChars"),
                             slashCharArray.map { it.toString() }
                         )
                             .setDefaultValue(mutableListOf("、"))
-                            .setTooltip(TranslatableComponent("tooltip.slashChars"))
+                            .setTooltip(Component.translatable("tooltip.slashChars"))
                             .setCellErrorSupplier { str ->
                                 if (str.length > 1)
-                                    return@setCellErrorSupplier Optional.of(TranslatableComponent("desc.error.slashChars"))
+                                    return@setCellErrorSupplier Optional.of(Component.translatable("desc.error.slashChars"))
                                 return@setCellErrorSupplier Optional.empty()
                             }
                             .setSaveConsumer { result ->

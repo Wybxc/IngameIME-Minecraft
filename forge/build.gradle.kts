@@ -40,7 +40,7 @@ repositories {
 
 dependencies {
     forge("net.minecraftforge:forge:${rootProject.property("forge_version")}")
-    modImplementation("me.shedaniel.cloth:cloth-config-forge:6.2.+")
+    modImplementation("me.shedaniel.cloth:cloth-config-forge:${rootProject.property("cloth_config_version")}")
     implementation("thedarkcolour:kotlinforforge:${rootProject.property("kotlinforforge_version")}")
     common(project(":common", configuration = "namedElements")) { isTransitive = false }
     shadowCommon(project(":common", configuration = "transformProductionForge")) { isTransitive = false }
@@ -63,7 +63,6 @@ tasks {
     }
 
     shadowJar {
-        exclude("fabric.mod.json")
         exclude("architectury.common.json")
         configurations = listOf(project.configurations["shadowCommon"])
         archiveClassifier.set("dev-shadow")

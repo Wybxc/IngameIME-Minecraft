@@ -6,8 +6,7 @@ import city.windmill.ingameime.client.ScreenHandler
 import city.windmill.ingameime.client.gui.OverlayScreen
 import city.windmill.ingameime.client.jni.ExternalBaseIME
 import net.minecraft.client.Minecraft
-import net.minecraftforge.client.ClientRegistry
-import net.minecraftforge.client.ConfigGuiHandler
+import net.minecraftforge.client.ConfigScreenHandler
 import net.minecraftforge.client.event.ScreenEvent
 import net.minecraftforge.fml.IExtensionPoint
 import net.minecraftforge.fml.common.Mod
@@ -38,9 +37,9 @@ object IngameIMEClient {
             )
         }
         LOADING_CONTEXT.registerExtensionPoint(
-            ConfigGuiHandler.ConfigGuiFactory::class.java
+            ConfigScreenHandler.ConfigScreenFactory::class.java
         ) {
-            ConfigGuiHandler.ConfigGuiFactory(BiFunction { _, parent ->
+            ConfigScreenHandler.ConfigScreenFactory(BiFunction { _, parent ->
                 return@BiFunction ConfigHandler.createConfigScreen().setParentScreen(parent).build()
             })
         }
@@ -67,14 +66,14 @@ object IngameIMEClient {
     @Suppress("UNUSED_PARAMETER")
     private fun enqueueIMC(event: InterModEnqueueEvent) {
         with(FORGE_BUS) {
-            addListener<ScreenEvent.DrawScreenEvent.Post> {
+            addListener<ScreenEvent.Render.Post> {
 //                OverlayScreen.render(it.matrixStack, it.mouseX, it.mouseY, it.renderPartialTicks)
-                OverlayScreen.render(it.poseStack, it.mouseX, it.mouseY, it.partialTicks)
+                OverlayScreen.render(it.poseStack, it.mouseX, it.mouseY, it.partialTick)
             }
-            addListener<ScreenEvent.KeyboardKeyPressedEvent.Pre> {
+            addListener<ScreenEvent.KeyPressed.Pre> {
                 it.isCanceled = KeyHandler.KeyState.onKeyDown(it.keyCode, it.scanCode, it.modifiers)
             }
-            addListener<ScreenEvent.KeyboardKeyReleasedEvent.Pre> {
+            addListener<ScreenEvent.KeyReleased.Pre> {
                 it.isCanceled = KeyHandler.KeyState.onKeyUp(it.keyCode, it.scanCode, it.modifiers)
             }
         }
