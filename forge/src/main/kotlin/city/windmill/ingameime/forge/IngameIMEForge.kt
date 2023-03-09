@@ -23,7 +23,7 @@ import java.util.function.BiFunction
 
 
 @Mod(IngameIME.MODID)
-object IngameIMEClient {
+object IngameIMEForge {
     val INGAMEIME_BUS = MOD_BUS
 
     init {

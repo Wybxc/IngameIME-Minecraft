@@ -7,7 +7,6 @@ architectury {
     forge()
 }
 
-val modId: String = rootProject.property("archives_base_name").toString()
 loom {
     accessWidenerPath.set(project(":common").loom.accessWidenerPath)
 
@@ -17,7 +16,6 @@ loom {
 
         mixinConfig("ingameime.forge.mixin.json")
     }
-
 }
 
 /**
