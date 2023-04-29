@@ -12,7 +12,7 @@ import net.minecraftforge.client.event.RegisterKeyMappingsEvent
 import net.minecraftforge.client.event.ScreenEvent
 import net.minecraftforge.fml.IExtensionPoint
 import net.minecraftforge.fml.common.Mod
-//import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent
 import net.minecraftforge.network.NetworkConstants
 import thedarkcolour.kotlinforforge.forge.FORGE_BUS
@@ -50,7 +50,6 @@ object IngameIMEForge {
                 IngameIME.LOGGER.info("it is Windows OS! Loading mod...")
 
                 with(INGAMEIME_BUS) {
-                    //addListener(::onClientSetup)
                     addListener(::registerKeys)
                     addListener(::enqueueIMC)
                 }
@@ -58,13 +57,6 @@ object IngameIMEForge {
                 IngameIME.LOGGER.warn("This mod cant work in $platform !")
         }) { IngameIME.LOGGER.warn("This mod cant work in a DelicateServer!") }
     }
-
-/*
-    @Suppress("UNUSED_PARAMETER")
-    private fun onClientSetup(event: FMLClientSetupEvent) {
-        ClientRegistry.registerKeyBinding(KeyHandler.toggleKey)
-    }
- */
 
     private fun registerKeys(event: RegisterKeyMappingsEvent) {
         event.register(KeyHandler.toggleKey)
@@ -74,7 +66,6 @@ object IngameIMEForge {
     private fun enqueueIMC(event: InterModEnqueueEvent) {
         with(FORGE_BUS) {
             addListener<ScreenEvent.Render.Post> {
-//                OverlayScreen.render(it.matrixStack, it.mouseX, it.mouseY, it.renderPartialTicks)
                 OverlayScreen.render(it.poseStack, it.mouseX, it.mouseY, it.partialTick)
             }
             addListener<ScreenEvent.KeyPressed.Pre> {
