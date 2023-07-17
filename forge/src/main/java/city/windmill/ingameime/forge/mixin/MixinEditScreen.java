@@ -2,8 +2,10 @@ package city.windmill.ingameime.forge.mixin;
 
 import city.windmill.ingameime.forge.IngameIMEForge;
 import city.windmill.ingameime.forge.ScreenEvents;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Matrix4f;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.AbstractSignEditScreen;
+import org.joml.Matrix4f;
 import kotlin.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -29,7 +31,10 @@ class MixinEditScreen {
     private void onInit(CallbackInfo info) {
         IngameIMEForge.INSTANCE.getINGAMEIME_BUS().post(new ScreenEvents.EditOpen(this, new Pair<>(0, 0)));
     }
+}
 
+@Mixin({Screen.class, AbstractSignEditScreen.class})
+class MixinScreen {
     @Inject(method = "removed", at = @At("TAIL"))
     private void onRemove(CallbackInfo info) {
         IngameIMEForge.INSTANCE.getINGAMEIME_BUS().post(new ScreenEvents.EditClose(this));
@@ -54,9 +59,9 @@ abstract class MixinBookEditScreen {
 
     @Inject(method = "render",
             at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/client/gui/Font;draw(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/util/FormattedCharSequence;FFI)I"),
+                    target = "Lnet/minecraft/client/gui/GuiGraphics;drawString(Lnet/minecraft/client/gui/Font;Lnet/minecraft/util/FormattedCharSequence;IIIZ)I"),
             locals = LocalCapture.CAPTURE_FAILSOFT)
-    private void onCaret_Book(PoseStack poseStack, int i, int j, float f, CallbackInfo ci,
+    private void onCaret_Book(GuiGraphics arg, int i, int j, float f, CallbackInfo ci,
                               int k, FormattedCharSequence formattedCharSequence, int m, int n) {
         IngameIMEForge.INSTANCE.getINGAMEIME_BUS().post(new ScreenEvents.EditCaret(this, new Pair<>(
                 k + 36 + (114 + n) / 2
@@ -66,23 +71,23 @@ abstract class MixinBookEditScreen {
     }
 }
 
-@Mixin(SignEditScreen.class)
+@Mixin(AbstractSignEditScreen.class)
 abstract class MixinEditSignScreen extends Screen {
 
     protected MixinEditSignScreen(Component p_i51108_1_) {
         super(p_i51108_1_);
     }
 
-    @Inject(method = "render",
+    @Inject(method = "renderSignText",
             at = {
                     @At(value = "INVOKE",
-                            target = "Lnet/minecraft/client/gui/Font;drawInBatch(Ljava/lang/String;FFIZLcom/mojang/math/Matrix4f;Lnet/minecraft/client/renderer/MultiBufferSource;ZIIZ)I",
+                            target = "Lnet/minecraft/client/gui/GuiGraphics;drawString(Lnet/minecraft/client/gui/Font;Ljava/lang/String;IIIZ)I",
                             ordinal = 1),
                     @At(value = "INVOKE",
-                            target = "net/minecraft/client/gui/screens/inventory/SignEditScreen.fill(Lcom/mojang/blaze3d/vertex/PoseStack;IIIII)V",
+                            target = "Lnet/minecraft/client/gui/GuiGraphics;fill(IIIII)V",
                             ordinal = 0)},
             locals = LocalCapture.CAPTURE_FAILSOFT)
-    private void onCaret_Sign(PoseStack arg, int i, int j, float f, CallbackInfo ci, float g, BlockState lv, boolean bl, boolean bl2, float h, MultiBufferSource.BufferSource lv2, float k, int l, int m, int n, int o, Matrix4f lv5, int p, String string, float q, int r, int s) {
+    private void onCaret_Sign(GuiGraphics arg, int i, int j, float f, CallbackInfo ci, float g, BlockState lv, boolean bl, boolean bl2, float h, MultiBufferSource.BufferSource lv2, float k, int l, int m, int n, int o, Matrix4f lv5, int p, String string, float q, int r, int s) {
         //s(23)->x,o(17)->y
         try {
             Field m03 = lv5.getClass().getDeclaredField("m03");
@@ -96,7 +101,7 @@ abstract class MixinEditSignScreen extends Screen {
     }
 
     @Surrogate
-    private void onCaret_Sign(PoseStack arg, int i, int j, float f, CallbackInfo ci, float g, BlockState lv, boolean bl, boolean bl2, float h, MultiBufferSource.BufferSource lv2, float k, int l, int m, int n, int o, Matrix4f lv5, int t, String string2, int u, int v) {
+    private void onCaret_Sign(GuiGraphics arg, int i, int j, float f, CallbackInfo ci, float g, BlockState lv, boolean bl, boolean bl2, float h, MultiBufferSource.BufferSource lv2, float k, int l, int m, int n, int o, Matrix4f lv5, int t, String string2, int u, int v) {
         //v(22)->x,o(17)->y
         try {
             Field m03 = lv5.getClass().getDeclaredField("m03");

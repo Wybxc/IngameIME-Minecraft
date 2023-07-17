@@ -1,14 +1,13 @@
 package city.windmill.ingameime.forge
 
-import city.windmill.ingameime.client.ConfigHandler
 import city.windmill.ingameime.IngameIME
+import city.windmill.ingameime.client.ConfigHandler
 import city.windmill.ingameime.client.KeyHandler
 import city.windmill.ingameime.client.ScreenHandler
 import city.windmill.ingameime.client.gui.OverlayScreen
 import city.windmill.ingameime.client.jni.ExternalBaseIME
 import city.windmill.ingameime.forge.register.ForgeConfigScreenRegister
 import net.minecraft.client.Minecraft
-import net.minecraftforge.client.ConfigScreenHandler
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent
 import net.minecraftforge.client.event.ScreenEvent
 import net.minecraftforge.fml.IExtensionPoint
@@ -19,7 +18,6 @@ import thedarkcolour.kotlinforforge.forge.FORGE_BUS
 import thedarkcolour.kotlinforforge.forge.LOADING_CONTEXT
 import thedarkcolour.kotlinforforge.forge.MOD_BUS
 import thedarkcolour.kotlinforforge.forge.runForDist
-import java.util.function.BiFunction
 
 
 @Mod(IngameIME.MODID)
@@ -72,7 +70,7 @@ object IngameIMEForge {
     private fun enqueueIMC(event: InterModEnqueueEvent) {
         with(FORGE_BUS) {
             addListener<ScreenEvent.Render.Post> {
-                OverlayScreen.render(it.poseStack, it.mouseX, it.mouseY, it.partialTick)
+                OverlayScreen.render(it.guiGraphics, it.mouseX, it.mouseY, it.partialTick)
             }
             addListener<ScreenEvent.KeyPressed.Pre> {
                 it.isCanceled = KeyHandler.KeyState.onKeyDown(it.keyCode, it.scanCode, it.modifiers)
